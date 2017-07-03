@@ -1,10 +1,10 @@
 ﻿using Eventos.IO.Domain.Core.Models;
+using Eventos.IO.Domain.Organizadores;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace Eventos.IO.Domain.Models
+namespace Eventos.IO.Domain.Eventos
 {
     public class Evento : Entity<Evento>
     {
@@ -23,7 +23,8 @@ namespace Eventos.IO.Domain.Models
         public Endereco Endereco { get; private set; }
         public Organizador Organizador { get; private set; }            
 
-        public Evento(string nome, DateTime dataInicio, DateTime dataFim, bool gratuito, decimal valor, bool online, string nomeEmpresa)
+        public Evento(string nome, DateTime dataInicio, DateTime dataFim, bool gratuito, decimal valor, 
+            bool online, string nomeEmpresa)
         {
             Id = Guid.NewGuid();
             Nome = nome;
