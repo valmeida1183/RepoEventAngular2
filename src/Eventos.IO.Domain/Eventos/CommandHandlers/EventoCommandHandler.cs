@@ -2,6 +2,7 @@
 using Eventos.IO.Domain.Core.Events.Interfaces;
 using Eventos.IO.Domain.Eventos.Commands;
 using Eventos.IO.Domain.Eventos.Repository;
+using Eventos.IO.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,7 +16,7 @@ namespace Eventos.IO.Domain.Eventos.CommandHandlers
     {
         private readonly IEventoRepository _eventoRepository;
 
-        public EventoCommandHandler(IEventoRepository eventoRepository)
+        public EventoCommandHandler(IEventoRepository eventoRepository, IUnitOfWork uow): base(uow)
         {
             _eventoRepository = eventoRepository;
         }
@@ -36,6 +37,11 @@ namespace Eventos.IO.Domain.Eventos.CommandHandlers
 
             //Persistência
             _eventoRepository.Add(evento);
+
+            if (Commit())
+            {
+                Console.WriteLine("Evento registrado com sucesso");
+            }
         }
 
         public void Handle(AtualizarEventoCommand message)
