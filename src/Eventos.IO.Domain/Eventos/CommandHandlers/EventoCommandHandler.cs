@@ -1,6 +1,8 @@
 ﻿using Eventos.IO.Domain.CommandHandlers;
+using Eventos.IO.Domain.Core.Bus;
 using Eventos.IO.Domain.Core.Events.Interfaces;
 using Eventos.IO.Domain.Eventos.Commands;
+using Eventos.IO.Domain.Eventos.Events;
 using Eventos.IO.Domain.Eventos.Repository;
 using Eventos.IO.Domain.Interfaces;
 using System;
@@ -15,10 +17,12 @@ namespace Eventos.IO.Domain.Eventos.CommandHandlers
         IHandler<ExcluirEventoCommand>
     {
         private readonly IEventoRepository _eventoRepository;
+        private readonly IBus _bus;
 
-        public EventoCommandHandler(IEventoRepository eventoRepository, IUnitOfWork uow): base(uow)
+        public EventoCommandHandler(IEventoRepository eventoRepository, IUnitOfWork uow, IBus bus): base(uow, bus)
         {
             _eventoRepository = eventoRepository;
+            _bus = bus;
         }
 
         public void Handle(RegistrarEventoCommand message)
@@ -35,12 +39,13 @@ namespace Eventos.IO.Domain.Eventos.CommandHandlers
             // Validações de negócio!
             // Organizador pode registrar evento?
 
-            //Persistência
             _eventoRepository.Add(evento);
 
             if (Commit())
             {
                 Console.WriteLine("Evento registrado com sucesso");
+                _bus.RaiseEvent(new EventoRegistradoEvent(evento.Id, evento.Nome, evento.DataInicio, evento.DataFim,
+                    evento.Gratuito, evento.Valor, evento.Online, evento.NomeEmpresa));
             }
         }
 

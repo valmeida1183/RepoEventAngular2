@@ -1,4 +1,5 @@
-﻿using Eventos.IO.Domain.Interfaces;
+﻿using Eventos.IO.Domain.Core.Bus;
+using Eventos.IO.Domain.Interfaces;
 using FluentValidation.Results;
 using System;
 
@@ -7,10 +8,12 @@ namespace Eventos.IO.Domain.CommandHandlers
     public abstract class CommandHandler
     {
         private readonly IUnitOfWork _uow;
+        private readonly IBus _bus;
 
-        public CommandHandler(IUnitOfWork uow)
+        public CommandHandler(IUnitOfWork uow, IBus bus)
         {
             _uow = uow;
+            _bus = bus;
         }
 
         protected void NotificarValidacoesErro(ValidationResult validationResult)
@@ -18,6 +21,7 @@ namespace Eventos.IO.Domain.CommandHandlers
             foreach (var error in validationResult.Errors)
             {
                 Console.WriteLine(error.ErrorMessage);
+                _bus.RaiseEvent();
             }
         }
 
@@ -31,6 +35,7 @@ namespace Eventos.IO.Domain.CommandHandlers
             }
 
             Console.WriteLine("Ocorreu um erro ao salvar os dados no banco");
+            _bus.RaiseEvent();
             return false;
         }
     }
