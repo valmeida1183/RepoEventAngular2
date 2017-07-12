@@ -1,6 +1,8 @@
 ﻿using Eventos.IO.Domain.CommandHandlers;
 using Eventos.IO.Domain.Core.Bus;
 using Eventos.IO.Domain.Core.Events.Interfaces;
+using Eventos.IO.Domain.Core.Notifications;
+using Eventos.IO.Domain.Core.Notifications.Interfaces;
 using Eventos.IO.Domain.Eventos.Commands;
 using Eventos.IO.Domain.Eventos.Events;
 using Eventos.IO.Domain.Eventos.Repository;
@@ -19,7 +21,10 @@ namespace Eventos.IO.Domain.Eventos.CommandHandlers
         private readonly IEventoRepository _eventoRepository;
         private readonly IBus _bus;
 
-        public EventoCommandHandler(IEventoRepository eventoRepository, IUnitOfWork uow, IBus bus): base(uow, bus)
+        public EventoCommandHandler(IEventoRepository eventoRepository, 
+            IUnitOfWork uow, 
+            IBus bus, 
+            IDomainNotificationHandler<DomainNotification> notification): base(uow, bus, notification)
         {
             _eventoRepository = eventoRepository;
             _bus = bus;

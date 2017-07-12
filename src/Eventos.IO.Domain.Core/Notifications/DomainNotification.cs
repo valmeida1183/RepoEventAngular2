@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Eventos.IO.Domain.Core.Notifications
 {
-    class DomainNotification : Event
+    public class DomainNotification : Event
     {
         public Guid DomainNotificationId { get; private set; }
         public string Key { get; private set; }
