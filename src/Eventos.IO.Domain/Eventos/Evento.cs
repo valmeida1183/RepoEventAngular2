@@ -36,6 +36,11 @@ namespace Eventos.IO.Domain.Eventos
             NomeEmpresa = nomeEmpresa;          
         }
 
+        private Evento()
+        {
+
+        }
+
 
         // No DDD a entitdade deve se auto-validar, para que não seja possível criar registros inválidos no BD.
         public override bool EhValido()
@@ -111,5 +116,33 @@ namespace Eventos.IO.Domain.Eventos
         }
 
         #endregion
+
+        public static class EventoFactory
+        {
+            public static Evento NovoEventoCompleto(Guid id, string nome, string descCurta, string descLonga, DateTime dataInicio, DateTime dataFim, bool gratuito, decimal valor,
+            bool online, string nomeEmpresa, Guid? organizadorId)
+            {
+                var evento = new Evento()
+                {
+                    Id = id,
+                    Nome = nome,
+                    DescricaoCurta = descCurta,
+                    DescricaoLonga = descLonga,
+                    DataInicio = dataInicio,
+                    DataFim = dataFim,
+                    Gratuito = gratuito,
+                    Valor = valor,
+                    Online = online,
+                    NomeEmpresa = nomeEmpresa
+                };
+
+                if (organizadorId != null)
+                {
+                    evento.Organizador = new Organizador(organizadorId.Value);
+                }
+
+                return evento;
+            }
+        }
     }
 }

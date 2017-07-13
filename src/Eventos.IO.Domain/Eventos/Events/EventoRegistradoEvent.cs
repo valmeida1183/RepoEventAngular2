@@ -1,7 +1,4 @@
-﻿using Eventos.IO.Domain.Core.Events;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace Eventos.IO.Domain.Eventos.Events
 {
