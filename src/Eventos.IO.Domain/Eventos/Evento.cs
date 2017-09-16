@@ -79,7 +79,7 @@ namespace Eventos.IO.Domain.Eventos
             if (Gratuito)
             {
                 RuleFor(c => c.Valor)
-                    .ExclusiveBetween(0, 0).When(e => e.Gratuito)
+                    .Equal(0).When(e => e.Gratuito)
                     .WithMessage("O valor não deve ser diferente de 0 para um evento gratuito");
             }
         }
@@ -87,10 +87,10 @@ namespace Eventos.IO.Domain.Eventos
         private void ValidarData()
         {
             RuleFor(c => c.DataInicio)
-                 .GreaterThan(c => c.DataFim).WithMessage("A data de início não deve ser maior que a data do final do evento");
+                 .LessThan(c => c.DataFim).WithMessage("A data de início não deve ser maior que a data do final do evento");
 
             RuleFor(c => c.DataInicio)
-                .LessThan(DateTime.Now).WithMessage("A data de início não deve ser menor que a data atual");
+                .GreaterThan(DateTime.Now).WithMessage("A data de início não deve ser menor que a data atual");
         }
 
         private void ValidarLocal()
