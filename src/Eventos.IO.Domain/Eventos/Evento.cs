@@ -18,10 +18,21 @@ namespace Eventos.IO.Domain.Eventos
         public Decimal Valor { get; private set; }
         public bool Online { get; private set; }
         public string NomeEmpresa { get; private set; }
-        public Categoria Categoria { get; private set; }
+        public bool Excluido { get; private set; }        
         public ICollection<Tags> Tags { get; private set; }
-        public Endereco Endereco { get; private set; }
-        public Organizador Organizador { get; private set; }            
+        public Guid? CategoriaId { get; private set; }
+        public Guid? EnderecoId { get; private set; }
+        public Guid OrganizadorId { get; private set; }
+
+        //EF Propriedades de Navegação
+        public virtual Categoria Categoria { get; private set; }
+        public virtual Endereco Endereco { get; private set; }
+        public virtual Organizador Organizador { get; private set; }
+
+        public void AtribuirEndereco(Endereco endereco)
+        {
+
+        }
 
         public Evento(string nome, DateTime dataInicio, DateTime dataFim, bool gratuito, decimal valor, 
             bool online, string nomeEmpresa)
@@ -40,7 +51,6 @@ namespace Eventos.IO.Domain.Eventos
         {
 
         }
-
 
         // No DDD a entitdade deve se auto-validar, para que não seja possível criar registros inválidos no BD.
         public override bool EhValido()
