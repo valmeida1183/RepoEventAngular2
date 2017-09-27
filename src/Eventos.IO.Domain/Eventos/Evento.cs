@@ -31,7 +31,8 @@ namespace Eventos.IO.Domain.Eventos
 
         public void AtribuirEndereco(Endereco endereco)
         {
-
+            if (!endereco.EhValido()) return;
+            Endereco = endereco;
         }
 
         public Evento(string nome, DateTime dataInicio, DateTime dataFim, bool gratuito, decimal valor, 
@@ -70,6 +71,9 @@ namespace Eventos.IO.Domain.Eventos
             ValidarNomeEmpresa();
 
             ValidationResult = Validate(this);
+
+            //Validações adicionais
+            ValidarEndereco();
         }
 
         private void ValidarNome()
@@ -125,12 +129,24 @@ namespace Eventos.IO.Domain.Eventos
                 .Length(2, 150).WithMessage("O nome da empresa precisa ter entre 2 e 150 caracteres");
         }
 
+        private void ValidarEndereco()
+        {
+            if (Online) return;
+            if (Endereco.EhValido()) return;
+
+            // Copia os erros de validação da entidade Endereço para o ValidationResult da raiz de agregação.
+            foreach (var error in Endereco.ValidationResult.Errors)
+            {
+                ValidationResult.Errors.Add(error);
+            }
+        }
+
         #endregion
 
         public static class EventoFactory
         {
             public static Evento NovoEventoCompleto(Guid id, string nome, string descCurta, string descLonga, DateTime dataInicio, DateTime dataFim, bool gratuito, decimal valor,
-            bool online, string nomeEmpresa, Guid? organizadorId)
+            bool online, string nomeEmpresa, Guid? organizadorId, Endereco endereco, Categoria categoria)
             {
                 var evento = new Evento()
                 {
@@ -143,12 +159,19 @@ namespace Eventos.IO.Domain.Eventos
                     Gratuito = gratuito,
                     Valor = valor,
                     Online = online,
-                    NomeEmpresa = nomeEmpresa
+                    NomeEmpresa = nomeEmpresa,
+                    Endereco = endereco,
+                    Categoria = categoria
                 };
 
                 if (organizadorId != null)
                 {
                     evento.Organizador = new Organizador(organizadorId.Value);
+                }
+
+                if (online)
+                {
+                    evento.Endereco = null;
                 }
 
                 return evento;
