@@ -8,7 +8,7 @@ namespace ConsoleTesting
 {
     public class FakeRepository : IEventoRepository
     {
-        public void Add(Evento obj)
+        public void Adicionar(Evento obj)
         {
             //
         }
@@ -18,22 +18,22 @@ namespace ConsoleTesting
             //
         }
 
-        public IEnumerable<Evento> Find(Expression<Func<Evento, bool>> predicate)
+        public IEnumerable<Evento> Buscar(Expression<Func<Evento, bool>> predicate)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Evento> GetAll()
+        public IEnumerable<Evento> ObterTodos()
         {
             throw new NotImplementedException();
         }
 
-        public Evento GetById(Guid id)
+        public Evento ObterPorId(Guid id)
         {
             return new Evento("Fake", DateTime.Now, DateTime.Now, true, 0, true, "Empresa");
         }
 
-        public void Remove(Guid Id)
+        public void Remover(Guid Id)
         {
             //
         }
@@ -43,9 +43,29 @@ namespace ConsoleTesting
             throw new NotImplementedException();
         }
 
-        public void Update(Evento obj)
+        public void Atualizar(Evento obj)
         {
             //
+        }
+
+        public IEnumerable<Evento> ObterEventoPorOrganizador(Guid organizadorId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Endereco ObterEnderecoPorId(Guid Id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AdicionarEndereco(Endereco endereco)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AtualizarEndereco(Endereco endereco)
+        {
+            throw new NotImplementedException();
         }
     }
 }
