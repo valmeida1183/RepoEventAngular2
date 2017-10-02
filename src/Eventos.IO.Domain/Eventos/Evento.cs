@@ -176,9 +176,9 @@ namespace Eventos.IO.Domain.Eventos
                     CategoriaId = categoriaId
                 };
 
-                if (organizadorId != null)
+                if (organizadorId.HasValue)
                 {
-                    evento.Organizador = new Organizador(organizadorId.Value);
+                    evento.OrganizadorId = organizadorId.Value;
                 }
 
                 if (online)
