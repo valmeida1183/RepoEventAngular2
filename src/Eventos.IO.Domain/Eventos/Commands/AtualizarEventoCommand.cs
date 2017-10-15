@@ -7,7 +7,7 @@ namespace Eventos.IO.Domain.Eventos.Commands
     public class AtualizarEventoCommand : BaseEventoCommand
     {
         public AtualizarEventoCommand(Guid id, string nome, string descricaoCurta, string descricaoLonga, DateTime dataInicio, 
-            DateTime dataFim, bool gratuito, decimal valor, bool online, string nomeEmpresa)
+            DateTime dataFim, bool gratuito, decimal valor, bool online, string nomeEmpresa, Guid organizadorId, Guid categoriaId)
         {
             Id = id;
             Nome = nome;
@@ -19,6 +19,8 @@ namespace Eventos.IO.Domain.Eventos.Commands
             Valor = valor;
             Online = online;
             NomeEmpresa = nomeEmpresa;
+            OrganizadorId = organizadorId;
+            CategoriaId = categoriaId;
         }
     }
 }
