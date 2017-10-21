@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Eventos.IO.Site.Models.AccountViewModels
 {
-    public class ExternalLoginConfirmationViewModel
+    public class ExternalLoginViewModel
     {
         [Required]
         [EmailAddress]
