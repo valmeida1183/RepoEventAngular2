@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Eventos.IO.Site.Data;
 using Eventos.IO.Site.Models;
 using Eventos.IO.Site.Services;
+using Eventos.IO.Application.Interfaces;
+using Eventos.IO.Application.Services;
+using Microsoft.Extensions.Logging;
 
 namespace Eventos.IO.Site
 {
@@ -35,13 +38,17 @@ namespace Eventos.IO.Site
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
+            services.AddScoped<IEventoAppService, EventoAppService>();
 
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddConsole(Configuration.GetSection("Loggin"));
+            loggerFactory.AddDebug();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
