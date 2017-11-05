@@ -52,7 +52,7 @@ namespace Eventos.IO.Site.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(EventoViewModel eventoViewModel)
         {
-            if (ModelState.IsValid) return View(eventoViewModel);
+            if (!ModelState.IsValid) return View(eventoViewModel);
 
             _eventoAppService.Registrar(eventoViewModel);
             
@@ -80,7 +80,7 @@ namespace Eventos.IO.Site.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EventoViewModel eventoViewModel)
         {
-            if (ModelState.IsValid) return View(eventoViewModel);
+            if (!ModelState.IsValid) return View(eventoViewModel);
 
             _eventoAppService.Atualizar(eventoViewModel);
 

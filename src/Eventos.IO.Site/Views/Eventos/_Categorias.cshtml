@@ -1,0 +1,6 @@
+﻿@model EventoViewModel
+@using Eventos.IO.Application.ViewModels
+@{
+    var categorias = (IEnumerable<SelectListItem>)new CategoriaViewModel().Categorias();
+}
+<select asp-for="CategoriaId" asp-items="@categorias" class="form-control"></select>

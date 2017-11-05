@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
@@ -12,10 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Eventos.IO.Site.Data;
 using Eventos.IO.Site.Models;
 using Eventos.IO.Site.Services;
-using Eventos.IO.Application.Interfaces;
-using Eventos.IO.Application.Services;
 using Microsoft.Extensions.Logging;
 using Eventos.IO.Infra.CrossCutting.Bus;
+using Eventos.IO.Infra.CrossCutting.IoC;
+using AutoMapper;
 
 namespace Eventos.IO.Site
 {
@@ -40,9 +36,10 @@ namespace Eventos.IO.Site
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
-            services.AddScoped<IEventoAppService, EventoAppService>();
+            RegisterServices(services);
 
             services.AddMvc();
+            services.AddAutoMapper();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -77,6 +74,11 @@ namespace Eventos.IO.Site
             });
 
             InMemoryBus.ContainerAccessor = () => accessor.HttpContext.RequestServices;
+        }
+
+        private static void RegisterServices(IServiceCollection services)
+        {
+            NativeInjectorBootStrapper.RegisterServices(services);
         }
     }
 }

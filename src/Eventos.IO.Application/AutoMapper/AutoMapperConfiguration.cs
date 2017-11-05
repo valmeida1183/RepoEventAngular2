@@ -11,6 +11,12 @@ namespace Eventos.IO.Application.AutoMapper
                 profie.AddProfile(new DomainToViewModelMappingProfile());
                 profie.AddProfile(new ViewModelToDomainMappingProfile());
             });
+
+            //Mapper.Initialize(profile =>
+            //{
+            //    profile.AddProfile(new DomainToViewModelMappingProfile());
+            //    profile.AddProfile(new ViewModelToDomainMappingProfile());
+            //});
         }
     }    
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Eventos.IO.Application.AutoMapper;
 using Eventos.IO.Application.Interfaces;
 using Eventos.IO.Application.Services;
 using Eventos.IO.Domain.Core.Bus;
@@ -21,8 +22,8 @@ namespace Eventos.IO.Infra.CrossCutting.IoC
     {
         public static void RegisterServices(IServiceCollection services)
         {
-            // Application - AutoMapper
-            services.AddSingleton(Mapper.Configuration);
+            // Application - AutoMapper            
+            services.AddSingleton(AutoMapperConfiguration.RegisterMappings());
             services.AddScoped<IMapper>(sp => new Mapper(sp.GetRequiredService<IConfigurationProvider>(), sp.GetService));
 
             // Application 
