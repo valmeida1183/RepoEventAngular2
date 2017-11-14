@@ -24,7 +24,7 @@ namespace Eventos.IO.Infra.Data.UoW
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _context.Dispose();
         }
     }
 }
