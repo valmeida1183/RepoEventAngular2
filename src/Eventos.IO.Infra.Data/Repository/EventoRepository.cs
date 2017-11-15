@@ -1,4 +1,5 @@
-﻿using Eventos.IO.Domain.Eventos;
+﻿using Dapper;
+using Eventos.IO.Domain.Eventos;
 using Eventos.IO.Domain.Eventos.Repository;
 using Eventos.IO.Infra.Data.Context;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,16 @@ namespace Eventos.IO.Infra.Data.Repository
         public EventoRepository(EventosContext context) : base(context)
         {
 
+        }
+
+        public override IEnumerable<Evento> ObterTodos()
+        {
+            //Usando o Dapper para retornar a listagem dos eventos
+            var sql = "SELECT * FROM EVENTOS E " +
+                      "WHERE E.EXCLUIDO = 0 " +
+                      "ORDER BY E.DATAFIM DESC ";
+
+            return Db.Database.GetDbConnection().Query<Evento>(sql);
         }
 
         public void AdicionarEndereco(Endereco endereco)
@@ -39,7 +50,26 @@ namespace Eventos.IO.Infra.Data.Repository
         public override Evento ObterPorId(Guid id)
         {
             // Traz o Evento juntamente com o Endereço (INNER JOIN)
-            return Db.Eventos.Include(e => e.Endereco).FirstOrDefault(e => e.Id == id);
+            //return Db.Eventos.Include(e => e.Endereco).FirstOrDefault(e => e.Id == id);
+
+            // @ antes de uma string significa que ela deve ser interpretada literalmente, desconsiderando caracteres de escape.
+            var sql = @"SELECT * FROM Eventos E " +
+                       "LEFT JOIN Enderecos EN " +
+                       "ON E.Id = EN.EventoId " +
+                       "WHERE E.Id = @uid";
+
+            var evento = Db.Database.GetDbConnection().Query<Evento, Endereco, Evento>(sql,
+                (e, en) =>
+                {
+                    if (en != null)
+                    {
+                        e.AtribuirEndereco(en);
+                    }
+
+                    return e;
+                }, new { uid = id });
+
+            return evento.FirstOrDefault();
         }
     }
 }
