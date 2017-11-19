@@ -39,19 +39,35 @@ namespace Eventos.IO.Infra.Data.Repository
 
         public Endereco ObterEnderecoPorId(Guid id)
         {
-            return Db.Enderecos.Find(id);
+            //EF
+            //return Db.Enderecos.Find(id);
+
+            var sql = @"SELECT * FROM ENDERECOS E " +
+                       "WHERE E.Id = @uid";
+
+            var endereco = Db.Database.GetDbConnection().Query<Endereco>(sql, new { uid = id });
+            return endereco.SingleOrDefault();
         }
 
         public IEnumerable<Evento> ObterEventoPorOrganizador(Guid organizadorId)
-        {            
-            return Db.Eventos.Where(e => e.OrganizadorId == organizadorId);
-        }
-
-        public override Evento ObterPorId(Guid id)
         {
+            //EF 
+            //return Db.Eventos.Where(e => e.OrganizadorId == organizadorId);
+
+            //Dapper
+            var sql = @"SELECT * FROM EVENTOS E " +
+                       "WHERE E.EXCLUIDO = 0 " +
+                       "AND E.ORGANIZADORID = @oid " +
+                       "ORDER BY E.DATAFIM DESC";
+
+            return Db.Database.GetDbConnection().Query<Evento>(sql, new { oid = organizadorId });
+        }        
+        public override Evento ObterPorId(Guid id)
+        {   //EF
             // Traz o Evento juntamente com o Endereço (INNER JOIN)
             //return Db.Eventos.Include(e => e.Endereco).FirstOrDefault(e => e.Id == id);
 
+            //Dapper
             // @ antes de uma string significa que ela deve ser interpretada literalmente, desconsiderando caracteres de escape.
             var sql = @"SELECT * FROM Eventos E " +
                        "LEFT JOIN Enderecos EN " +

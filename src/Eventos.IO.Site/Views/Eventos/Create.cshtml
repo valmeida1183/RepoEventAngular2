@@ -10,9 +10,9 @@
 <h4>Preencha todos os dados corretamente</h4>
 <hr />
 <div class="row">
+    <vc:summary />
     <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Create">            
             <div class="form-group">
                 <label asp-for="Nome" class="control-label"></label>
                 <input asp-for="Nome" class="form-control" />

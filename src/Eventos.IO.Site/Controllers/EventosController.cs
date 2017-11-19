@@ -32,7 +32,7 @@ namespace Eventos.IO.Site.Controllers
                 return NotFound();
             }
 
-            var eventoViewModel = _eventoAppService.ObterEnderecoPorId(id.Value);
+            var eventoViewModel = _eventoAppService.ObterPorId(id.Value);
             
             if (eventoViewModel == null)
             {
@@ -66,7 +66,7 @@ namespace Eventos.IO.Site.Controllers
                 return NotFound();
             }
 
-            var eventoViewModel = _eventoAppService.ObterEnderecoPorId(id.Value);
+            var eventoViewModel = _eventoAppService.ObterPorId(id.Value);
             if (eventoViewModel == null)
             {
                 return NotFound();
@@ -97,7 +97,7 @@ namespace Eventos.IO.Site.Controllers
                 return NotFound();
             }
 
-            var eventoViewModel = _eventoAppService.ObterEnderecoPorId(id.Value);
+            var eventoViewModel = _eventoAppService.ObterPorId(id.Value);
             if (eventoViewModel == null)
             {
                 return NotFound();
