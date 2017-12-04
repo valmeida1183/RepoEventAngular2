@@ -30,13 +30,11 @@ namespace Eventos.IO.Application.ViewModels
         public string DescricaoLonga { get; set; }
 
         [Display(Name = "Início do Evento")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]        
+        [Required(ErrorMessage = "A data é requirida")]            
         public DateTime DataInicio { get; set; }
 
         [Display(Name = "Fim do Evento")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        [Required(ErrorMessage = "A data é requirida")]      
         public DateTime DataFim { get; set; }
 
         [Display(Name = "Será gratuito?")]
