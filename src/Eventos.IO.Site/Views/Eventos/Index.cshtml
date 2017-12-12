@@ -24,7 +24,7 @@
                     @Html.DisplayNameFor(model => model.Nome)
                 </th>                
                 <th>
-                    @Html.DisplayNameFor(model => model.DataInicio)
+                    @Html.DisplayNameFor(model => model.DataInicio)                    
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.DataFim)
@@ -46,9 +46,11 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DataInicio)
+                @item.DataInicio.ToString("d");
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DataFim)
+                @item.DataFim.ToString("d");
             </td>
             <td>
                 @{
