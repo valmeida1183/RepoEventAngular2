@@ -10,10 +10,14 @@ using Eventos.IO.Domain.Eventos.Commands;
 using Eventos.IO.Domain.Eventos.Events;
 using Eventos.IO.Domain.Eventos.Repository;
 using Eventos.IO.Domain.Interfaces;
+using Eventos.IO.Domain.Organizadores.Commands;
+using Eventos.IO.Domain.Organizadores.Events;
+using Eventos.IO.Domain.Organizadores.Repository;
 using Eventos.IO.Infra.CrossCutting.Bus;
 using Eventos.IO.Infra.Data.Context;
 using Eventos.IO.Infra.Data.Repository;
 using Eventos.IO.Infra.Data.UoW;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Eventos.IO.Infra.CrossCutting.IoC
@@ -22,26 +26,34 @@ namespace Eventos.IO.Infra.CrossCutting.IoC
     {
         public static void RegisterServices(IServiceCollection services)
         {
+            // Asp.Net 
+            //services.AddScoped<IUser, AspNetUser>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             // Application - AutoMapper            
             services.AddSingleton(AutoMapperConfiguration.RegisterMappings());
             services.AddScoped<IMapper>(sp => new Mapper(sp.GetRequiredService<IConfigurationProvider>(), sp.GetService));
 
             // Application 
             services.AddScoped<IEventoAppService, EventoAppService>();
+            services.AddScoped<IOrganizadorAppService, OrganizadorAppService>();
 
             //Domain - Commandos
             services.AddScoped<IHandler<RegistrarEventoCommand>, EventoCommandHandler>();
             services.AddScoped<IHandler<AtualizarEventoCommand>, EventoCommandHandler>();
             services.AddScoped<IHandler<ExcluirEventoCommand>, EventoCommandHandler>();
+            services.AddScoped<IHandler<RegistrarOrganizadorCommand>, OrganizadorCommandHandler>();
 
             //Domain - Eventos
             services.AddScoped<IDomainNotificationHandler<DomainNotification>, DomainNotificationHandler>();
             services.AddScoped<IHandler<EventoRegistradoEvent>, EventoEventHandler>();
             services.AddScoped<IHandler<EventoAtualizadoEvent>, EventoEventHandler>();
             services.AddScoped<IHandler<EventoExcluidoEvent>, EventoEventHandler>();
+            services.AddScoped<IHandler<OrganizadorRegistradoEvent>, OrganizadorEventHandler>();
 
             //Infra - Data
             services.AddScoped<IEventoRepository, EventoRepository>();
+            services.AddScoped<IOrganizadorRepository, OrganizadorRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<EventosContext>();
 

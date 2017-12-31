@@ -9,6 +9,7 @@ using Eventos.IO.Domain.Interfaces;
 using Eventos.IO.Domain.Core.Events.Interfaces;
 using Eventos.IO.Domain.Organizadores.Repository;
 using System.Linq;
+using Eventos.IO.Domain.Organizadores.Events;
 
 namespace Eventos.IO.Domain.Organizadores.Commands
 {
@@ -30,7 +31,7 @@ namespace Eventos.IO.Domain.Organizadores.Commands
         {
             var organizador = new Organizador(message.Id, message.Nome, message.CPF, message.Email);
 
-            if (organizador.EhValido())
+            if (!organizador.EhValido())
             {
                 NotificarValidacoesErro(organizador.ValidationResult);
                 return;
@@ -47,7 +48,7 @@ namespace Eventos.IO.Domain.Organizadores.Commands
             
             if (Commit())
             {
-                //_bus.RaiseEvent<>
+                _bus.RaiseEvent(new OrganizadorRegistradoEvent(organizador.Id, organizador.Nome, organizador.CPF, organizador.Email));
             }
         }
     }
