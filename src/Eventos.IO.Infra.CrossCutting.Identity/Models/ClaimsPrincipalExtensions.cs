@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
-namespace Eventos.IO.Site.Models
+namespace Eventos.IO.Infra.CrossCutting.Identity.Models
 {
     //Classe que injeta um método (GetUserId) em outra classe (ClaimsPrincipal)
     public static class ClaimsPrincipalExtensions

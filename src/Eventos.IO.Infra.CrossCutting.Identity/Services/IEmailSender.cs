@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Eventos.IO.Site.Services
+namespace Eventos.IO.Infra.CrossCutting.Identity.Services
 {
     public interface IEmailSender
     {

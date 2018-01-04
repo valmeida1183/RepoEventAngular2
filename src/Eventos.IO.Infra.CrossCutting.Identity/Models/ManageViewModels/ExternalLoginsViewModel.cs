@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
-namespace Eventos.IO.Site.Models.ManageViewModels
+namespace Eventos.IO.Infra.CrossCutting.Identity.Models.ManageViewModels
 {
     public class ExternalLoginsViewModel
     {
