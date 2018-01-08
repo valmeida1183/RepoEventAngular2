@@ -7,7 +7,7 @@
 <h2>Edit</h2>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/css/bootstrap-datepicker3.min.css" rel="stylesheet">
 
-<h4>EventoViewModel</h4>
+<h4>EventobViewModel</h4>
 <hr />
 <div class="row">
     <vc:summary />
@@ -71,14 +71,25 @@
                 <span asp-validation-for="NomeEmpresa" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Atualizar Evento" class="btn btn-success" />
+                <a asp-action="Index" class="btn btn-info">Voltar para Lista</a> 
             </div>
-        </form>
+        </form>        
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div id="EnderecoForm" class="col-md-12">
+        <div id="EnderecoTarget">
+            @Html.Partial("_DetalhesEndereco")
+        </div>
+    </div>
+
+    <div id="myModal" class="modal fade in">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div id="myModalContent"></div>
+            </div>
+        </div>
+    </div> 
 </div>
 
 @section Scripts {
@@ -90,31 +101,14 @@
     
     <script>
         ValidacoesEvento();
+        AjaxModal();
     </script>
 
     @{if (ViewBag.RetornoPost != null)
         {
             var notificacao = ViewBag.RetornoPost.ToString().Split(",");
             <script>
-                toastr.options = {
-                "closeButton": false,
-                    "debug": true,
-                    "newestOnTop": false,
-                    "progressBar": true,
-                    "positionClass": "toast-top-right",
-                    "preventDuplicates": true,
-                    "onclick": null,
-                    "showDuration": "300",
-                    "hideDuration": "1000",
-                    "timeOut": "5000",
-                    "extendedTimeOut": "1000",
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut"
-                }
-
-            toastr["@notificacao[0]"]("@notificacao[1]");
+               toastr["@notificacao[0]"]("@notificacao[1]");
             </script>
         }
     }

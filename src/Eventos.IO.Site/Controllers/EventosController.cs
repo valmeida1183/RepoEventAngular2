@@ -55,6 +55,7 @@ namespace Eventos.IO.Site.Controllers
         {
             if (!ModelState.IsValid) return View(eventoViewModel);
 
+            eventoViewModel.OrganizadorId = OrganizadorId;
             _eventoAppService.Registrar(eventoViewModel);
 
             ViewBag.RetornoPost = OperacaoValida() ? "success,Evento Registrado com Sucesso!" : "error,Evento não registrado! Verifique as mensagens!";
@@ -120,6 +121,71 @@ namespace Eventos.IO.Site.Controllers
             _eventoAppService.Excluir(id);
 
             return RedirectToAction("Index");
-        }       
+        }
+        
+        public IActionResult IncluirEndereco(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var eventoViewModel = _eventoAppService.ObterPorId(id.Value);
+            return PartialView("_IncluirEndereco", eventoViewModel);
+        }
+
+        public IActionResult AtualizarEndereco(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var eventoViewModel = _eventoAppService.ObterPorId(id.Value);
+            return PartialView("_AtualizarEndereco", eventoViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult IncluirEndereco(EventoViewModel eventoViewModel)
+        {
+            eventoViewModel.Endereco.EventoId = eventoViewModel.Id;
+            _eventoAppService.AdicionarEndereco(eventoViewModel.Endereco);
+
+            if (OperacaoValida())
+            {
+                var url = Url.Action("ObterEndereco", "Eventos", new { id = eventoViewModel.Id });
+                return Json(new { success = true, url = url });
+            }
+
+            return PartialView("_IncluirEndereco", eventoViewModel);
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("atualizar-endereco/{id:guid}")]
+        public IActionResult AtualizarEndereco(EventoViewModel eventoViewModel)
+        {
+            ModelState.Clear();
+            _eventoAppService.AtualizarEndereco(eventoViewModel.Endereco);
+
+            if (OperacaoValida())
+            {
+                var url = Url.Action("ObterEndereco", "Eventos", new { id = eventoViewModel.Id });
+                return Json(new { success = true, url = url });
+            }
+
+            return PartialView("_AtualizarEndereco", eventoViewModel);
+        }
+
+        public IActionResult ObterEndereco(Guid id)
+        {
+            return PartialView("_DetalhesEndereco", _eventoAppService.ObterPorId(id));
+        }
+
+        private bool ValidarAutoridadeEvento(EventoViewModel eventoViewModel)
+        {
+            return eventoViewModel.OrganizadorId != OrganizadorId;
+        }
     }
 }
