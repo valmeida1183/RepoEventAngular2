@@ -87,5 +87,12 @@ namespace Eventos.IO.Infra.Data.Repository
 
             return evento.FirstOrDefault();
         }
+
+        public override void Remover(Guid id)
+        {
+            var evento = ObterPorId(id);
+            evento.ExcluirEvento();
+            Atualizar(evento);
+        }
     }
 }

@@ -24,7 +24,13 @@ namespace Eventos.IO.Site.Controllers
         {
            return View(_eventoAppService.ObterTodos());
         }
-        
+
+        [Authorize]
+        public IActionResult MeusEventos()
+        {
+            return View(_eventoAppService.ObterEventoPorOrganizador(OrganizadorId));
+        }
+
         public IActionResult Details(Guid? id)
         {
             if (id == null)
@@ -72,10 +78,16 @@ namespace Eventos.IO.Site.Controllers
             }
 
             var eventoViewModel = _eventoAppService.ObterPorId(id.Value);
+
             if (eventoViewModel == null)
             {
                 return NotFound();
             }
+
+            if (ValidarAutoridadeEvento(eventoViewModel))
+            {
+                return RedirectToAction("MeusEventos", _eventoAppService.ObterEventoPorOrganizador(OrganizadorId));
+            }           
             
             return View(eventoViewModel);
         }
@@ -85,12 +97,28 @@ namespace Eventos.IO.Site.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EventoViewModel eventoViewModel)
         {
+            if (ValidarAutoridadeEvento(eventoViewModel))
+            {
+                return RedirectToAction("MeusEventos", _eventoAppService.ObterEventoPorOrganizador(OrganizadorId));
+            }
+
             if (!ModelState.IsValid) return View(eventoViewModel);
 
             eventoViewModel.OrganizadorId = OrganizadorId;
             _eventoAppService.Atualizar(eventoViewModel);
 
             ViewBag.RetornoPost = OperacaoValida() ? "success,Evento Atualizado com Sucesso!" : "error,Evento não atualizado! Verifique as mensagens!";
+
+
+            var evento = _eventoAppService.ObterPorId(eventoViewModel.Id);
+            if (evento.Online)
+            {
+                eventoViewModel.Endereco = null;
+            }
+            else
+            {
+                eventoViewModel = evento;
+            }
 
             return View(eventoViewModel);
                
@@ -105,9 +133,15 @@ namespace Eventos.IO.Site.Controllers
             }
 
             var eventoViewModel = _eventoAppService.ObterPorId(id.Value);
+
             if (eventoViewModel == null)
             {
                 return NotFound();
+            }
+
+            if (ValidarAutoridadeEvento(eventoViewModel))
+            {
+                return RedirectToAction("MeusEventos", _eventoAppService.ObterEventoPorOrganizador(OrganizadorId));
             }
 
             return View(eventoViewModel);
@@ -118,6 +152,11 @@ namespace Eventos.IO.Site.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
+            if (ValidarAutoridadeEvento(_eventoAppService.ObterPorId(id)))
+            {
+                return RedirectToAction("MeusEventos", _eventoAppService.ObterEventoPorOrganizador(OrganizadorId));
+            }
+
             _eventoAppService.Excluir(id);
 
             return RedirectToAction("Index");
@@ -149,6 +188,7 @@ namespace Eventos.IO.Site.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult IncluirEndereco(EventoViewModel eventoViewModel)
         {
+            ModelState.Clear();
             eventoViewModel.Endereco.EventoId = eventoViewModel.Id;
             _eventoAppService.AdicionarEndereco(eventoViewModel.Endereco);
 
@@ -163,7 +203,6 @@ namespace Eventos.IO.Site.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("atualizar-endereco/{id:guid}")]
         public IActionResult AtualizarEndereco(EventoViewModel eventoViewModel)
         {
             ModelState.Clear();

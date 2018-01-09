@@ -19,14 +19,17 @@ namespace Eventos.IO.Domain.Eventos.Commands
     {
         private readonly IEventoRepository _eventoRepository;
         private readonly IBus _bus;
+        private readonly IUser _user;
 
         public EventoCommandHandler(IEventoRepository eventoRepository, 
             IUnitOfWork uow, 
             IBus bus, 
-            IDomainNotificationHandler<DomainNotification> notification): base(uow, bus, notification)
+            IDomainNotificationHandler<DomainNotification> notification,
+            IUser user) : base(uow, bus, notification)
         {
             _eventoRepository = eventoRepository;
             _bus = bus;
+            _user = user;
         }
 
         public void Handle(RegistrarEventoCommand message)
@@ -59,13 +62,23 @@ namespace Eventos.IO.Domain.Eventos.Commands
         {
             var eventoAtual = _eventoRepository.ObterPorId(message.Id);
 
-            if (!EventoExistente(message.Id, message.MessageType)) return; 
+            if (!EventoExistente(message.Id, message.MessageType)) return;
 
-            //TODO: validar se o evento pertence a pessoa que está editando.
+            if (eventoAtual.OrganizadorId != _user.GetUserId())
+            {
+                _bus.RaiseEvent(new DomainNotification(message.MessageType, "Evento não pertencente ao Organizador"));
+                return;
+            }
 
             var evento = Evento.EventoFactory.NovoEventoCompleto(message.Id, message.Nome, message.DescricaoCurta,
                message.DescricaoLonga, message.DataInicio, message.DataFim, message.Gratuito, message.Valor,
                message.Online, message.NomeEmpresa, message.OrganizadorId, eventoAtual.Endereco, message.CategoriaId);
+
+            if (!evento.Online && evento.Endereco == null)
+            {
+                _bus.RaiseEvent(new DomainNotification(message.MessageType, "Não é possível atualizar um evento sem informar o endereço"));
+                return;
+            }
 
             if (!EventoValido(evento))
             {
@@ -88,7 +101,18 @@ namespace Eventos.IO.Domain.Eventos.Commands
                 return;
             }
 
-            _eventoRepository.Remover(message.Id);
+            var eventoAtual = _eventoRepository.ObterPorId(message.Id);
+
+            if (eventoAtual.OrganizadorId != _user.GetUserId())
+            {
+                _bus.RaiseEvent(new DomainNotification(message.MessageType, "Evento não pertencente ao Organizador"));
+                return;
+            }
+
+            eventoAtual.ExcluirEvento();
+
+
+            _eventoRepository.Atualizar(eventoAtual);
 
             if (Commit())
             {
