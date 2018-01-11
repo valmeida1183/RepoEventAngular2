@@ -13,6 +13,11 @@ using Eventos.IO.Domain.Interfaces;
 using Eventos.IO.Infra.CrossCutting.Identity.Data;
 using Eventos.IO.Infra.CrossCutting.Identity.Models;
 using Eventos.IO.Infra.CrossCutting.Identity.Services;
+using Eventos.IO.Infra.CrossCutting.AspNetFilters;
+using Microsoft.AspNetCore.Mvc;
+using Elmah.Io.Extensions.Logging;
+using Elmah.Io.AspNetCore;
+using System;
 
 namespace Eventos.IO.Site
 {
@@ -33,9 +38,18 @@ namespace Eventos.IO.Site
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();            
+                .AddDefaultTokenProviders();
 
-            services.AddMvc();
+            services.AddAuthorization(options => {
+                options.AddPolicy("PodeLerEventos", policy => policy.RequireClaim("Eventos", "Ler"));
+                options.AddPolicy("PodeGravar", policy => policy.RequireClaim("Eventos", "Gravar"));
+            });
+
+            services.AddLogging();
+            services.AddMvc(options => {
+                options.Filters.Add(new ServiceFilterAttribute(typeof(GlobalExceptionHandlingFilter)));
+                options.Filters.Add(new ServiceFilterAttribute(typeof(GlobalActionLogger)));
+            });
             services.AddAutoMapper();
 
             RegisterServices(services);
@@ -50,6 +64,10 @@ namespace Eventos.IO.Site
             loggerFactory.AddConsole(Configuration.GetSection("Loggin"));
             loggerFactory.AddDebug();
 
+            loggerFactory.AddElmahIo("8f46c7cd9bfe4a618abf7a5ea652d0d9", new Guid("19ad15fd-5158-4b7a-b36d-ab56dfe4500a"));
+
+            app.UseElmahIo("8f46c7cd9bfe4a618abf7a5ea652d0d9", new Guid("19ad15fd-5158-4b7a-b36d-ab56dfe4500a"));
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -58,7 +76,8 @@ namespace Eventos.IO.Site
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/erro-de-aplicacao");
+                app.UseStatusCodePagesWithReExecute("/erro-de-aplicacao/{0}");
             }
 
             app.UseStaticFiles();
