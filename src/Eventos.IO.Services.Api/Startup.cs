@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Eventos.IO.Infra.CrossCutting.Identity.Authorization;
 using System;
+using Eventos.IO.Infra.CrossCutting.AspNetFilters;
 
 namespace Eventos.IO.Services.Api
 {
@@ -63,6 +64,7 @@ namespace Eventos.IO.Services.Api
                 // Adiciona a configuração de que todo filtro [Authorize] utiliza esta policy para realizar a validação,
                 // ou seja precisa possuir o token em todas as requisições com a anotation [Authorize].
                 options.Filters.Add(new AuthorizeFilter(policy));
+                options.Filters.Add(new ServiceFilterAttribute(typeof(GlobalActionLogger)));
             });
 
             // Configura as permissões de autorização.

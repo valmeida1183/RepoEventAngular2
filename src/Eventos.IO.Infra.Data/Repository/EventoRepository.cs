@@ -37,6 +37,13 @@ namespace Eventos.IO.Infra.Data.Repository
             Db.Enderecos.Update(endereco);
         }
 
+        public IEnumerable<Categoria> ObterCategorias()
+        {
+            //"@" é para ignorar os caracteres de escape. "C:\\Users\\Rich" is the same as @"C:\Users\Rich"
+            var sql = @"SELECT * FROM Categorias";
+            return Db.Database.GetDbConnection().Query<Categoria>(sql);
+        }
+
         public Endereco ObterEnderecoPorId(Guid id)
         {
             //EF
@@ -93,6 +100,6 @@ namespace Eventos.IO.Infra.Data.Repository
             var evento = ObterPorId(id);
             evento.ExcluirEvento();
             Atualizar(evento);
-        }
+        }        
     }
 }

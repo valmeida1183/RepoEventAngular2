@@ -11,6 +11,7 @@ namespace Eventos.IO.Domain.Eventos.Repository
         // Lembrando: Uma das regras da agregação é que temos que ter UM repositório por agregação.
         void AdicionarEndereco(Endereco endereco);
         void AtualizarEndereco(Endereco endereco);
+        IEnumerable<Categoria> ObterCategorias();
 
     }
 }

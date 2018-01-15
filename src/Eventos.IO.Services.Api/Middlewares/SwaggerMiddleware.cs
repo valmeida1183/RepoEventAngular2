@@ -24,8 +24,8 @@ namespace Eventos.IO.Services.Api.Middlewares
 
             if (context.Request.Path.StartsWithSegments("/swagger") && !user.IsAuthenticated())
             {
-               // context.Response.StatusCode = StatusCodes.Status404NotFound;
-               // return;
+               //context.Response.StatusCode = StatusCodes.Status404NotFound;
+               //return;
             }
 
             await _next.Invoke(context);
